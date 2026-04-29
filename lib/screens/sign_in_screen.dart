@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'dart:math' as math;
 import '../theme/app_theme.dart';
+import 'trip_lobby_screen.dart';
+import 'sign_up_screen.dart';
 
 /// SignInScreen — TropicaGuide Entry Point
 ///
@@ -102,7 +104,10 @@ class _SignInScreenState extends State<SignInScreen>
       // On success → navigate to Trip Lobby
       if (mounted) {
         _showSuccessSnackBar('Welcome back, explorer! 🌴');
-        // Navigator.pushReplacementNamed(context, '/lobby');
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const TripLobbyScreen()),
+        );
       }
     } catch (e) {
       if (mounted) {
@@ -136,8 +141,10 @@ class _SignInScreenState extends State<SignInScreen>
   }
 
   void _navigateToSignUp() {
-    // Navigator.pushNamed(context, '/signup');
-    _showSuccessSnackBar('Sign Up screen coming soon!');
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const SignUpScreen()),
+    );
   }
 
   // ─── Helpers ────────────────────────────────────────────────────────────────

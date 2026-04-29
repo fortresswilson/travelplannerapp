@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:math' as math;
 import '../theme/app_theme.dart';
+import 'optimizer_and_budget_optimizer_screen.dart';
 
 /// ChatVotingScreen — Real-time group chat with activity voting
 ///
@@ -48,7 +49,7 @@ class _ChatVotingScreenState extends State<ChatVotingScreen>
         text: 'Hey team! Should we do the Bali Swing on Day 1?', ts: DateTime.now().subtract(const Duration(hours: 2)),
         type: MessageType.text, reactions: {'🔥': 2, '👍': 1}),
     _ChatMessage(id: 'm2', senderId: 'me', senderName: 'Vaish', senderEmoji: '🧳',
-        text: 'Yes!! I've been dying to do it 🎢', ts: DateTime.now().subtract(const Duration(hours: 1, minutes: 50)),
+        text: 'Yes!! I\'ve been dying to do it 🎢', ts: DateTime.now().subtract(const Duration(hours: 1, minutes: 50)),
         type: MessageType.text),
     _ChatMessage(id: 'm3', senderId: 'aashika', senderName: 'Aashika', senderEmoji: '🌸',
         text: 'Added it to Day 2 actually — it pairs nicely with Ubud cooking class nearby 🍜', ts: DateTime.now().subtract(const Duration(hours: 1, minutes: 30)),
@@ -60,7 +61,7 @@ class _ChatVotingScreenState extends State<ChatVotingScreen>
         text: 'Mount Batur hike is a MUST. 2am start though 😅', ts: DateTime.now().subtract(const Duration(minutes: 40)),
         type: MessageType.text, reactions: {'😅': 2, '💪': 1}),
     _ChatMessage(id: 'm6', senderId: 'me', senderName: 'Vaish', senderEmoji: '🧳',
-        text: 'Budget check — we're at \$1,750 spent so far. Still good!', ts: DateTime.now().subtract(const Duration(minutes: 15)),
+        text: 'Budget check — we\'re at \$1,750 spent so far. Still good!', ts: DateTime.now().subtract(const Duration(minutes: 15)),
         type: MessageType.text),
   ];
 
@@ -673,14 +674,23 @@ class _ChatVotingScreenState extends State<ChatVotingScreen>
         SizedBox(
           width: double.infinity,
           child: OutlinedButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => OptimizerBudgetScreen(
+                    tripId: widget.tripId,
+                    destination: widget.tripDestination,
+                  ),
+                ),
+              );
+            },
             style: OutlinedButton.styleFrom(
               side: const BorderSide(color: AppColors.primary, width: 1.5),
               foregroundColor: AppColors.primary,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               padding: const EdgeInsets.symmetric(vertical: 12),
             ),
-            // TODO: push to OptimizerScreen
             child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Icon(Icons.tune_rounded, size: 16),
               SizedBox(width: 8),

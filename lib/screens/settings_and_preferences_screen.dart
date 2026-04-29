@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../theme/app_theme.dart';
+import 'sign_in_screen.dart';
 
 /// SettingsAndPreferencesScreen — App-wide settings and travel preferences
 ///
@@ -125,8 +126,12 @@ class _SettingsAndPreferencesScreenState
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              // TODO (Backend): FirebaseAuth.instance.signOut() then Navigator.pushReplacementNamed(context, '/signin')
-              _showSuccessSnackBar('Signed out successfully.');
+              // TODO (Backend): FirebaseAuth.instance.signOut()
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (_) => const SignInScreen()),
+                (route) => false,
+              );
             },
             child: const Text('Sign Out', style: TextStyle(color: AppColors.accent, fontWeight: FontWeight.w700)),
           ),

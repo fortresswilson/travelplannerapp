@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:math' as math;
 import '../theme/app_theme.dart';
+import 'sign_in_screen.dart';
+import 'itinerary_view_screen.dart';
+import 'create_join_trip_screen.dart';
+import 'user_profile_screen.dart';
+import 'settings_and_preferences_screen.dart';
 
 /// TripLobbyScreen — Home screen after successful sign-in
 ///
@@ -154,26 +159,22 @@ class _TripLobbyScreenState extends State<TripLobbyScreen>
 
   void _openTrip(_TripData trip) {
     HapticFeedback.selectionClick();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Opening ${trip.destination}... 🌍'),
-        backgroundColor: AppColors.primary,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        margin: const EdgeInsets.all(16),
-        duration: const Duration(seconds: 2),
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ItineraryViewScreen(
+          tripId: trip.id,
+          destination: trip.destination,
+        ),
       ),
     );
-    // TODO: Navigator.pushNamed(context, '/itinerary', arguments: trip.id);
   }
 
   void _handleSignOut() {
-    // TODO: FirebaseAuth.instance.signOut() then Navigator.pushReplacementNamed(context, '/signin');
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Signing out...'),
-        behavior: SnackBarBehavior.floating,
-      ),
+    // TODO (Backend): FirebaseAuth.instance.signOut()
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const SignInScreen()),
     );
   }
 
@@ -329,11 +330,21 @@ class _TripLobbyScreenState extends State<TripLobbyScreen>
               ),
             ],
           ),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const SettingsAndPreferencesScreen()),
+            );
+          },
         ),
-        // Avatar / sign out
+        // Avatar / profile tap
         GestureDetector(
-          onTap: _handleSignOut,
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const UserProfileScreen()),
+            );
+          },
           child: Container(
             margin: const EdgeInsets.only(right: 16),
             width: 36,
@@ -1079,7 +1090,12 @@ class _CreateJoinSheet extends StatelessWidget {
             color: AppColors.primary,
             onTap: () {
               Navigator.pop(context);
-              // TODO: Navigator.pushNamed(context, '/create-trip');
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const CreateJoinTripScreen(mode: TripMode.create),
+                ),
+              );
             },
           ),
           const SizedBox(height: 14),
@@ -1092,7 +1108,12 @@ class _CreateJoinSheet extends StatelessWidget {
             color: AppColors.accent,
             onTap: () {
               Navigator.pop(context);
-              // TODO: Navigator.pushNamed(context, '/join-trip');
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const CreateJoinTripScreen(mode: TripMode.join),
+                ),
+              );
             },
           ),
         ],

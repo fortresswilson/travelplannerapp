@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../theme/app_theme.dart';
+import 'add_activities_screen.dart';
+import 'optimizer_and_budget_optimizer_screen.dart';
+import 'chat_voting_screen.dart';
 
 /// ItineraryViewScreen — Ranked activity list for a trip
 ///
@@ -220,13 +223,33 @@ class _ItineraryViewScreenState extends State<ItineraryViewScreen>
       actions: [
         IconButton(
           icon: const Icon(Icons.tune_rounded, color: Colors.white),
-          onPressed: () {}, // TODO: open optimizer settings
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => OptimizerBudgetScreen(
+                  tripId: widget.tripId,
+                  destination: widget.destination,
+                ),
+              ),
+            );
+          },
           tooltip: 'Optimizer settings',
         ),
         IconButton(
-          icon: const Icon(Icons.share_outlined, color: Colors.white),
-          onPressed: () {},
-          tooltip: 'Share itinerary',
+          icon: const Icon(Icons.chat_bubble_outline_rounded, color: Colors.white),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => ChatVotingScreen(
+                  tripId: widget.tripId,
+                  tripDestination: widget.destination,
+                ),
+              ),
+            );
+          },
+          tooltip: 'Group chat',
         ),
       ],
       flexibleSpace: FlexibleSpaceBar(
@@ -586,11 +609,13 @@ class _ItineraryViewScreenState extends State<ItineraryViewScreen>
     return FloatingActionButton.extended(
       onPressed: () {
         HapticFeedback.lightImpact();
-        // TODO: Navigator.pushNamed(context, '/add-activities', arguments: widget.tripId);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Add Activities screen coming next!'),
-            behavior: SnackBarBehavior.floating,
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => AddActivitiesScreen(
+              tripId: widget.tripId,
+              tripDestination: widget.destination,
+            ),
           ),
         );
       },
