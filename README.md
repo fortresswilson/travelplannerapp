@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # travelplannerapp
+=======
+# tropicaguide
+>>>>>>> f3a9d3e37722b01bd4990a6275b59411f3a90ff3
 
 A new Flutter project.
 

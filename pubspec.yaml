@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 name: travelplannerapp
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
@@ -27,17 +28,43 @@ environment:
 # dependencies can be manually updated by changing the version numbers below to
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
+=======
+name: tropicaguide
+description: "TropicaGuide — Collaborative Travel Planner App (Flutter + Firebase)"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.2.0 <4.0.0'
+
+>>>>>>> f3a9d3e37722b01bd4990a6275b59411f3a90ff3
 dependencies:
   flutter:
     sdk: flutter
 
+<<<<<<< HEAD
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
+=======
+  # Google Fonts (optional — set fontFamily to 'Poppins' for polish)
+  # google_fonts: ^6.2.1
+
+  # Firebase — uncomment when Backend Lead sets up Firebase project
+  # firebase_core: ^2.27.0
+  # firebase_auth: ^4.17.8
+  # cloud_firestore: ^4.15.8
+  # firebase_storage: ^11.6.8
+  # firebase_messaging: ^14.7.19
+  # google_sign_in: ^6.2.1
+
+  cupertino_icons: ^1.0.6
+>>>>>>> f3a9d3e37722b01bd4990a6275b59411f3a90ff3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+<<<<<<< HEAD
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -87,3 +114,12 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+=======
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  # assets:
+  #   - assets/images/
+  #   - assets/icons/
+>>>>>>> f3a9d3e37722b01bd4990a6275b59411f3a90ff3

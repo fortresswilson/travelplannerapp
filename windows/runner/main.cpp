@@ -27,7 +27,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   FlutterWindow window(project);
   Win32Window::Point origin(10, 10);
   Win32Window::Size size(1280, 720);
+<<<<<<< HEAD
   if (!window.Create(L"travelplannerapp", origin, size)) {
+=======
+  if (!window.Create(L"tropicaguide", origin, size)) {
+>>>>>>> f3a9d3e37722b01bd4990a6275b59411f3a90ff3
     return EXIT_FAILURE;
   }
   window.SetQuitOnClose(true);

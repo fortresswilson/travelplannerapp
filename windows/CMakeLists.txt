@@ -1,10 +1,18 @@
 # Project-level configuration.
 cmake_minimum_required(VERSION 3.14)
+<<<<<<< HEAD
 project(travelplannerapp LANGUAGES CXX)
 
 # The name of the executable created for the application. Change this to change
 # the on-disk name of your application.
 set(BINARY_NAME "travelplannerapp")
+=======
+project(tropicaguide LANGUAGES CXX)
+
+# The name of the executable created for the application. Change this to change
+# the on-disk name of your application.
+set(BINARY_NAME "tropicaguide")
+>>>>>>> f3a9d3e37722b01bd4990a6275b59411f3a90ff3
 
 # Explicitly opt in to modern CMake behaviors to avoid warnings with recent
 # versions of CMake.
