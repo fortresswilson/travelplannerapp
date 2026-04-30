@@ -39,8 +39,8 @@ class _UserProfileScreenState extends State<UserProfileScreen>
 
   // ─── Mock data ────────────────────────────────────────────────────────────
   final _UserProfile _profile = const _UserProfile(
-    name: 'Vaishali Mehta',
-    handle: '@vaish',
+    name: 'Demo',
+    handle: '@Demo',
     location: 'Atlanta, GA',
     emoji: '🧳',
     tripCount: 7,
