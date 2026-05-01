@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import '../theme/app_theme.dart';
 import 'trip_lobby_screen.dart';
 import 'sign_up_screen.dart';
+import '../services/auth_service.dart';
 
 /// SignInScreen — TropicaGuide Entry Point
 ///
@@ -28,6 +29,7 @@ class _SignInScreenState extends State<SignInScreen>
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _authService = AuthService();
 
   bool _obscurePassword = true;
   bool _isLoading = false;
@@ -94,29 +96,30 @@ class _SignInScreenState extends State<SignInScreen>
 
   /// TODO (Backend): Replace body with FirebaseAuth.signInWithEmailAndPassword
   Future<void> _handleEmailSignIn() async {
-    if (!_formKey.currentState!.validate()) return;
-
-    setState(() => _isLoading = true);
-    try {
-      // Simulate network call — remove when Firebase is wired
-      await Future.delayed(const Duration(seconds: 2));
-
-      // On success → navigate to Trip Lobby
-      if (mounted) {
-        _showSuccessSnackBar('Welcome back, explorer! 🌴');
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const TripLobbyScreen()),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        _showErrorSnackBar('Sign in failed. Please check your credentials.');
-      }
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
+  if (!_formKey.currentState!.validate()) return;
+  setState(() => _isLoading = true);
+  try {
+    await _authService.signInWithEmail(
+      email: _emailController.text,
+      password: _passwordController.text,
+    );
+    // AuthGate in main.dart will automatically navigate to TripLobbyScreen
+    // No manual Navigator needed — the stream handles it
+  } on FirebaseAuthException catch (e) {
+    if (mounted) {
+      final msg = switch (e.code) {
+        'user-not-found'  => 'No account found with this email.',
+        'wrong-password'  => 'Incorrect password. Try again.',
+        'invalid-email'   => 'That email address is not valid.',
+        'user-disabled'   => 'This account has been disabled.',
+        _                 => 'Sign in failed: ${e.message}',
+      };
+      _showErrorSnackBar(msg);
     }
+  } finally {
+    if (mounted) setState(() => _isLoading = false);
   }
+}
 
   /// TODO (Backend): Replace with GoogleAuthProvider flow
   Future<void> _handleGoogleSignIn() async {
