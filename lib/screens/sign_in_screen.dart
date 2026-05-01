@@ -123,17 +123,19 @@ class _SignInScreenState extends State<SignInScreen>
 
   /// TODO (Backend): Replace with GoogleAuthProvider flow
   Future<void> _handleGoogleSignIn() async {
-    setState(() => _isLoading = true);
-    try {
-      await Future.delayed(const Duration(seconds: 1));
-      if (mounted) {
-        _showSuccessSnackBar('Google sign-in coming soon!');
-      }
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
+  setState(() => _isLoading = true);
+  try {
+    final cred = await _authService.signInWithGoogle();
+    if (cred == null && mounted) {
+      _showErrorSnackBar('Google sign-in was cancelled.');
     }
+    // AuthGate handles navigation automatically
+  } catch (e) {
+    if (mounted) _showErrorSnackBar('Google sign-in failed. Try again.');
+  } finally {
+    if (mounted) setState(() => _isLoading = false);
   }
-
+}
   /// TODO (Backend): FirebaseAuth.sendPasswordResetEmail
   void _handleForgotPassword() {
     if (_emailController.text.isEmpty) {
