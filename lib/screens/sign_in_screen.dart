@@ -136,21 +136,20 @@ class _SignInScreenState extends State<SignInScreen>
     if (mounted) setState(() => _isLoading = false);
   }
 }
-  /// TODO (Backend): FirebaseAuth.sendPasswordResetEmail
-  void _handleForgotPassword() {
-    if (_emailController.text.isEmpty) {
-      _showErrorSnackBar('Enter your email first to reset your password.');
-      return;
+  void _handleForgotPassword() async {
+  if (_emailController.text.isEmpty) {
+    _showErrorSnackBar('Enter your email first to reset your password.');
+    return;
+  }
+  try {
+    await _authService.sendPasswordReset(_emailController.text);
+    if (mounted) {
+      _showSuccessSnackBar('Password reset email sent to ${_emailController.text}');
     }
-    _showSuccessSnackBar('Password reset email sent to ${_emailController.text}');
+  } on FirebaseAuthException catch (e) {
+    if (mounted) _showErrorSnackBar(e.message ?? 'Reset failed.');
   }
-
-  void _navigateToSignUp() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const SignUpScreen()),
-    );
-  }
+}
 
   // ─── Helpers ────────────────────────────────────────────────────────────────
   void _showSuccessSnackBar(String message) {
