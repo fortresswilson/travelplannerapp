@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'dart:math' as math;
 import '../theme/app_theme.dart';
 import 'optimizer_and_budget_optimizer_screen.dart';
+import '../services/chat_service.dart';
+import '../models/message_model.dart';
 
 /// ChatVotingScreen — Real-time group chat with activity voting
 ///
@@ -35,6 +37,7 @@ class _ChatVotingScreenState extends State<ChatVotingScreen>
   // ─── Controllers ─────────────────────────────────────────────────────────
   final _messageController = TextEditingController();
   final _scrollController  = ScrollController();
+   final _chatService = ChatService();
   late final TabController _tabController;
   late final AnimationController _entryController;
   late final AnimationController _sendPulse;
@@ -95,6 +98,7 @@ class _ChatVotingScreenState extends State<ChatVotingScreen>
     _tabController  = TabController(length: 2, vsync: this);
     _entryController = AnimationController(vsync: this, duration: const Duration(milliseconds: 600))..forward();
     _sendPulse      = AnimationController(vsync: this, duration: const Duration(milliseconds: 200));
+     
   }
 
   @override
