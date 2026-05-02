@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'dart:math' as math;
 import '../theme/app_theme.dart';
 import 'trip_lobby_screen.dart';
+ import 'package:firebase_auth/firebase_auth.dart';
+ import '../services/auth_service.dart';
 
 /// SignUpScreen — New user registration
 ///
@@ -25,6 +27,7 @@ class _SignUpScreenState extends State<SignUpScreen>
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmController = TextEditingController();
+  final _authService = AuthService();
 
   bool _isLoading = false;
   bool _obscurePassword = true;
@@ -58,33 +61,28 @@ class _SignUpScreenState extends State<SignUpScreen>
   }
 
   Future<void> _handleSignUp() async {
-    if (!_formKey.currentState!.validate()) return;
-    setState(() => _isLoading = true);
-    try {
-      // Simulate network call — replace with FirebaseAuth.createUserWithEmailAndPassword
-      await Future.delayed(const Duration(seconds: 2));
-      if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const TripLobbyScreen()),
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Sign up failed: ${e.toString()}'),
-            backgroundColor: AppColors.error,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            margin: const EdgeInsets.all(16),
-          ),
-        );
-      }
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
+  if (!_formKey.currentState!.validate()) return;
+  setState(() => _isLoading = true);
+  try {
+    await _authService.signUpWithEmail(
+      name: _nameController.text,
+      email: _emailController.text,
+      password: _passwordController.text,
+    );
+  } on FirebaseAuthException catch (e) {
+    if (mounted) {
+      final msg = switch (e.code) {
+        'email-already-in-use' => 'An account with this email already exists.',
+        'invalid-email'        => 'That email address is not valid.',
+        'weak-password'        => 'Password must be at least 6 characters.',
+        _                      => 'Sign up failed: ${e.message}',
+      };
+      _showErrorSnackBar(msg);
     }
+  } finally {
+    if (mounted) setState(() => _isLoading = false);
   }
+}
 
   @override
   Widget build(BuildContext context) {
