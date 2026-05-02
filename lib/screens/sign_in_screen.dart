@@ -5,17 +5,11 @@ import '../theme/app_theme.dart';
 import 'trip_lobby_screen.dart';
 import 'sign_up_screen.dart';
 import '../services/auth_service.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
 /// SignInScreen — TropicaGuide Entry Point
 ///
 /// Navigation: This screen is the first stop in the flow:
 ///   Sign In → Trip Lobby → Create/Join Trip → ...
-///
-/// Firebase hooks (to be wired by Backend Lead):
-///   - [_handleEmailSignIn] → FirebaseAuth.signInWithEmailAndPassword
-///   - [_handleGoogleSignIn] → GoogleAuthProvider + FirebaseAuth.signInWithCredential
-///   - [_handleForgotPassword] → FirebaseAuth.sendPasswordResetEmail
-///   - [_navigateToSignUp]   → push to SignUpScreen (to be built next)
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
 
@@ -94,7 +88,6 @@ class _SignInScreenState extends State<SignInScreen>
 
   // ─── Handlers ───────────────────────────────────────────────────────────────
 
-  /// TODO (Backend): Replace body with FirebaseAuth.signInWithEmailAndPassword
   Future<void> _handleEmailSignIn() async {
   if (!_formKey.currentState!.validate()) return;
   setState(() => _isLoading = true);
@@ -121,7 +114,12 @@ class _SignInScreenState extends State<SignInScreen>
   }
 }
 
-  /// TODO (Backend): Replace with GoogleAuthProvider flow
+  void _navigateToSignUp() {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (_) => const SignUpScreen()),
+  );
+}
   Future<void> _handleGoogleSignIn() async {
   setState(() => _isLoading = true);
   try {
