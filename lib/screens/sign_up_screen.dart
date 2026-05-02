@@ -59,6 +59,17 @@ class _SignUpScreenState extends State<SignUpScreen>
     _confirmController.dispose();
     super.dispose();
   }
+  void _showErrorSnackBar(String message) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(message, style: const TextStyle(color: Colors.white)),
+      backgroundColor: AppColors.error,
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      margin: const EdgeInsets.all(16),
+    ),
+  );
+}
 
   Future<void> _handleSignUp() async {
   if (!_formKey.currentState!.validate()) return;
