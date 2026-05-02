@@ -98,7 +98,7 @@ class _ChatVotingScreenState extends State<ChatVotingScreen>
     _tabController  = TabController(length: 2, vsync: this);
     _entryController = AnimationController(vsync: this, duration: const Duration(milliseconds: 600))..forward();
     _sendPulse      = AnimationController(vsync: this, duration: const Duration(milliseconds: 200));
-     
+     _chatService.setupFCM(widget.tripId);
   }
 
   @override
