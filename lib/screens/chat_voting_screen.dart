@@ -5,6 +5,7 @@ import '../theme/app_theme.dart';
 import 'optimizer_and_budget_optimizer_screen.dart';
 import '../services/chat_service.dart';
 import '../models/message_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 /// ChatVotingScreen — Real-time group chat with activity voting
 ///
@@ -113,40 +114,12 @@ class _ChatVotingScreenState extends State<ChatVotingScreen>
 
   // ─── Handlers ────────────────────────────────────────────────────────────
   Future<void> _sendMessage() async {
-    final text = _messageController.text.trim();
-    if (text.isEmpty) return;
-
-    HapticFeedback.lightImpact();
-    _sendPulse.forward().then((_) => _sendPulse.reverse());
-
-    setState(() {
-      _isSending = true;
-      _messages.add(_ChatMessage(
-        id: 'm${_messages.length + 1}',
-        senderId: 'me',
-        senderName: 'Vaish',
-        senderEmoji: '🧳',
-        text: text,
-        ts: DateTime.now(),
-        type: MessageType.text,
-      ));
-      _messageController.clear();
-    });
-
-    // TODO (Backend): Firestore.collection('trips/${widget.tripId}/messages').add({...})
-    await Future.delayed(const Duration(milliseconds: 300));
-    setState(() => _isSending = false);
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_scrollController.hasClients) {
-        _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
-      }
-    });
-  }
+  final text = _messageController.text;
+  if (text.trim().isEmpty) return;
+  _messageController.clear();
+  await _chatService.sendMessage(tripId: widget.tripId, text: text);
+  await _chatService.setTyping(widget.tripId, false);
+}
 
   void _addReaction(String messageId, String emoji) {
     HapticFeedback.selectionClick();
@@ -301,18 +274,34 @@ class _ChatVotingScreenState extends State<ChatVotingScreen>
         _buildOnlineBar(),
 
         // Messages
-        Expanded(
-          child: ListView.builder(
-            controller: _scrollController,
-            padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
-            physics: const BouncingScrollPhysics(),
-            itemCount: _messages.length,
-            itemBuilder: (_, i) {
-              final msg = _messages[i];
-              return _buildMessageBubble(msg, i);
-            },
-          ),
-        ),
+       Expanded(
+  child: StreamBuilder<List<MessageModel>>(
+    stream: _chatService.messagesStream(widget.tripId),
+    builder: (context, snapshot) {
+      if (!snapshot.hasData) {
+        return const Center(child: CircularProgressIndicator());
+      }
+      final messages = snapshot.data!;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_scrollController.hasClients) {
+          _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOut,
+          );
+        }
+      });
+      return ListView.builder(
+        controller: _scrollController,
+        padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
+        physics: const BouncingScrollPhysics(),
+        itemCount: messages.length,
+        itemBuilder: (_, i) => _buildMessageBubble(messages[i], i),
+      );
+    },
+  ),
+), // Expanded
+        
 
         // Quick replies
         _buildQuickReplies(),
@@ -369,21 +358,20 @@ class _ChatVotingScreenState extends State<ChatVotingScreen>
     );
   }
 
-  Widget _buildMessageBubble(_ChatMessage msg, int index) {
-    final isMe     = msg.senderId == 'me';
+  Widget _buildMessageBubble(MessageModel msg, int i) {
+   final isMe = msg.senderId == FirebaseAuth.instance.currentUser?.uid;
     final isSystem = msg.type == MessageType.system;
 
     if (isSystem) {
-      return _SystemMessage(message: msg);
+     return _SystemMessage(message: msg.text);
     }
 
-    // Show date separator if needed
-    final showDate = index == 0 ||
-        _messages[index - 1].ts.day != msg.ts.day;
+    
+  final showDate = i == 0 || msg.ts == null;
 
     return Column(
       children: [
-        if (showDate) _buildDateSeparator(msg.ts),
+   if (showDate) _buildDateSeparator(msg.ts!),
         Align(
           alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
           child: GestureDetector(
@@ -412,7 +400,7 @@ class _ChatVotingScreenState extends State<ChatVotingScreen>
                           color: AppColors.primary.withOpacity(0.1),
                           shape: BoxShape.circle,
                         ),
-                        child: Center(child: Text(msg.senderEmoji, style: const TextStyle(fontSize: 16))),
+                       child: Center(child: Text('👤', style: const TextStyle(fontSize: 16))),
                       ),
                     ],
 
@@ -454,7 +442,7 @@ class _ChatVotingScreenState extends State<ChatVotingScreen>
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        _formatTime(msg.ts),
+                       _formatTime(msg.ts ?? DateTime.now()),
                         style: const TextStyle(fontSize: 10, color: AppColors.textHint),
                       ),
                       if (msg.reactions?.isNotEmpty == true) ...[
@@ -717,7 +705,7 @@ class _ChatVotingScreenState extends State<ChatVotingScreen>
 // ─── System Message ───────────────────────────────────────────────────────────
 
 class _SystemMessage extends StatelessWidget {
-  final _ChatMessage message;
+  final String message;
   const _SystemMessage({required this.message});
 
   @override
@@ -733,7 +721,7 @@ class _SystemMessage extends StatelessWidget {
       child: Row(children: [
         const Text('🌴', style: TextStyle(fontSize: 16)),
         const SizedBox(width: 10),
-        Expanded(child: Text(message.text,
+       Expanded(child: Text(message,
             style: const TextStyle(fontSize: 12, color: AppColors.primary, fontWeight: FontWeight.w600))),
       ]),
     );
