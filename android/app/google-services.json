@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "966164606581",
+    "project_id": "travelplanner-fortress",
+    "storage_bucket": "travelplanner-fortress.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:966164606581:android:093c44d7fd81028afdd23c",
+        "android_client_info": {
+          "package_name": "com.example.travelplannerapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDo-oHgVM0GLi3oGT_3xCo56ujl93urISA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
