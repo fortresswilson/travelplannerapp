@@ -137,23 +137,13 @@ class _ChatVotingScreenState extends State<ChatVotingScreen>
     // TODO (Backend): Firestore.doc('trips/${widget.tripId}/messages/${messageId}').update({'reactions.$emoji': FieldValue.increment(1)})
   }
 
-  void _castVote(String voteCardId, String emoji) {
-    HapticFeedback.lightImpact();
-    setState(() {
-      final idx = _voteCards.indexWhere((v) => v.id == voteCardId);
-      if (idx == -1) return;
-      final v = _voteCards[idx];
-      final updated = Map<String, String>.from(v.votes);
-      updated['me'] = emoji;
-      _voteCards[idx] = _VoteCard(
-        id: v.id, activityName: v.activityName, emoji: v.emoji,
-        description: v.description, cost: v.cost, duration: v.duration,
-        day: v.day, colors: v.colors, votes: updated, totalMembers: v.totalMembers,
-      );
-    });
-    // TODO (Backend): Firestore.doc('trips/${widget.tripId}/votes/${voteCardId}').update({'votes.me': emoji})
-  }
-
+  void _castVote(String voteCardId, String emoji) async {
+  await _chatService.castVote(
+    tripId: widget.tripId,
+    activityId: voteCardId,
+    voteEmoji: emoji,
+  );
+}
   void _showReactionPicker(String messageId) {
     showModalBottomSheet(
       context: context,
