@@ -1,0 +1,39 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+    function isTripMember(tripId) {
+      return request.auth.uid in get(/databases/$(database)/documents/trips/$(tripId)).data.members;
+    }
+
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId);
+      allow delete: if false;
+    }
+
+    match /trips/{tripId} {
+      allow read: if isSignedIn() && isTripMember(tripId);
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && isTripMember(tripId);
+      allow delete: if isSignedIn() && request.auth.uid == resource.data.ownerId;
+
+      match /activities/{activityId} {
+        allow read, write: if isSignedIn() && isTripMember(tripId);
+      }
+      match /messages/{messageId} {
+        allow read: if isSignedIn() && isTripMember(tripId);
+        allow create: if isSignedIn() && isTripMember(tripId) && request.resource.data.senderId == request.auth.uid;
+        allow update, del        allow update, del    match /votes/{activityId} {
+        allow read, w        allow read, w        allombe        allow read, w        allow read, w        allombe        allow read, w        allow read,mber   ipId        allow read, w   if isSignedIn() && isOwner(userId);
+      }
+    }
+  }
+}

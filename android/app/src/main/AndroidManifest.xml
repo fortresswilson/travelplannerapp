@@ -1,6 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
+<<<<<<< HEAD
+        android:label="travelplannerapp"
+=======
         android:label="tropicaguide"
+>>>>>>> f3a9d3e37722b01bd4990a6275b59411f3a90ff3
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

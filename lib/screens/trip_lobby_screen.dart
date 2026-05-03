@@ -7,6 +7,10 @@ import 'itinerary_view_screen.dart';
 import 'create_join_trip_screen.dart';
 import 'user_profile_screen.dart';
 import 'settings_and_preferences_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../services/auth_service.dart';
+import '../services/trip_service.dart';
+import '../models/trip_model.dart';
 
 /// TripLobbyScreen — Home screen after successful sign-in
 ///
@@ -35,7 +39,9 @@ class _TripLobbyScreenState extends State<TripLobbyScreen>
 
   late final Animation<double> _headerFade;
   late final Animation<double> _fabScale;
-
+  final _authService = AuthService();
+ final _tripService = TripService();
+ 
   // ─── State ────────────────────────────────────────────────────────────────
   int _selectedFilter = 0; // 0=All, 1=Upcoming, 2=Past
   bool _isLoading = false;
@@ -158,25 +164,20 @@ class _TripLobbyScreenState extends State<TripLobbyScreen>
   }
 
   void _openTrip(_TripData trip) {
-    HapticFeedback.selectionClick();
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => ItineraryViewScreen(
-          tripId: trip.id,
-          destination: trip.destination,
-        ),
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) => ItineraryViewScreen(
+      tripId: trip.id,
+      destination: trip.destination,
       ),
-    );
-  }
+    ),
+  );
+}
 
-  void _handleSignOut() {
-    // TODO (Backend): FirebaseAuth.instance.signOut()
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (_) => const SignInScreen()),
-    );
-  }
+  Future<void> _handleSignOut() async {
+  await _authService.signOut();
+}
 
   // ─── Bottom Sheet: Create or Join ────────────────────────────────────────
   void _showBottomSheet() {
